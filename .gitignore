@@ -1,0 +1,12 @@
+__pycache__/
+.ipynb_checkpoints/
+checkpoints/
+checkpoints_exps/
+*.h5
+*.weights.h5
+*.ckpt
+venv/
+.env/
+.DS_Store
+venv_new/
+venv_tf/
