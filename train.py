@@ -4,19 +4,19 @@ import tensorflow as tf
 from data_loader import get_splits, build_dataset, IMG_SIZE
 from sod_model import get_model_by_name, sod_loss, iou_score
 
-# ---------------- config ----------------
+
 BASE = "./ECSSD"
 IMAGES_DIR = BASE + "/images"
 MASKS_DIR = BASE + "/ground_truth_mask"
 CHECKPOINT_ROOT = "./checkpoints_exps"
 os.makedirs(CHECKPOINT_ROOT, exist_ok=True)
 
-BATCH_SIZE = 16  # reduce if OOM
+BATCH_SIZE = 16  
 EPOCHS = 25
 SEED = 42
 LR = 1e-3
 
-# ---------------- helpers ----------------
+
 def batch_metrics(y_true, y_pred):
     y_pred_bin = tf.where(y_pred>=0.5, 1.0, 0.0)
     y_true_f = tf.reshape(y_true, [-1]); y_pred_f = tf.reshape(y_pred_bin, [-1])
@@ -41,7 +41,7 @@ def run_experiment(model_name, lr=LR, batch_size=BATCH_SIZE, epochs=EPOCHS):
     model = get_model_by_name(model_name)
     optimizer = tf.keras.optimizers.Adam(lr)
 
-    # lr scheduler example (use ReduceLROnPlateau)
+
     reduce_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6, verbose=1)
 
     ckpt_dir = os.path.join(CHECKPOINT_ROOT, model_name)
@@ -50,18 +50,16 @@ def run_experiment(model_name, lr=LR, batch_size=BATCH_SIZE, epochs=EPOCHS):
 
     best_val_loss = 1e9; patience = 6; wait = 0
 
-    # optional: compile for convenience (not necessary with manual train loop)
+
     model.compile(optimizer=optimizer, loss=sod_loss)
 
     history = {'epoch':[], 'train_loss':[], 'val_loss':[], 'val_iou':[], 'val_f1':[]}
     for epoch in range(1, epochs+1):
         t0 = time.time()
-        # train loop (use fit for simplicity with our custom loss)
         hist = model.fit(train_ds, validation_data=val_ds, epochs=1, callbacks=[reduce_on_plateau], verbose=1)
         train_loss = hist.history['loss'][-1]
         val_loss = hist.history['val_loss'][-1] if 'val_loss' in hist.history else 0.0
 
-        # compute metrics on validation set
         precisions=[]; recalls=[]; f1s=[]; ious=[]
         for images_batch, masks_batch in val_ds:
             preds_val = model.predict(images_batch)
@@ -96,7 +94,6 @@ def run_experiment(model_name, lr=LR, batch_size=BATCH_SIZE, epochs=EPOCHS):
     test_results = {'IoU': float(np.mean(ious)), 'Precision': float(np.mean(precisions)), 'Recall': float(np.mean(recalls)), 'F1': float(np.mean(f1s))}
     print("Test results:", test_results)
 
-    # save history and test_results to CSV
     csv_path = os.path.join(ckpt_dir, "history.csv")
     with open(csv_path, 'w', newline='') as f:
         writer = csv.writer(f)
@@ -112,8 +109,7 @@ def run_experiment(model_name, lr=LR, batch_size=BATCH_SIZE, epochs=EPOCHS):
     return test_results, ckpt_dir
 
 if __name__ == "__main__":
-    # run baseline and two variants (one by one). comment/uncomment as needed.
-    exps = ['baseline', 'bn_dropout', 'deep']  # baseline, Variant A, Variant B
+    exps = ['baseline', 'bn_dropout']  # baseline, Variant A, Variant B
     results = {}
     for e in exps:
         res, ckpt_dir = run_experiment(e)

@@ -1,4 +1,3 @@
-# data_loader.py
 import tensorflow as tf
 import glob, os
 from sklearn.model_selection import train_test_split
@@ -90,7 +89,7 @@ def load_datasets(img_size=128, batch_size=32, seed=42):
     from sklearn.model_selection import train_test_split
     import os, glob, tensorflow as tf
 
-    BASE = "./ECSSD"  # adjust path to your local ECSSD folder
+    BASE = "./ECSSD"  
     IMAGES_DIR = os.path.join(BASE, "images")
     MASKS_DIR = os.path.join(BASE, "ground_truth_mask")
 
