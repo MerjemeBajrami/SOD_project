@@ -37,28 +37,35 @@ SOD/
 
 
 
-📁 Dataset
 
-The project uses datasets such as:
+---
 
-ECSSD
+## 📁 Dataset
 
-DUTS
+Supported datasets:
 
-HKU-IS
+- **ECSSD**
+- **DUTS**
+- **HKU-IS**
 
-
-The dataset structure should be:
+Expected folder structure:
 
 ECSSD/
 ├── images/
 └── ground_truth_mask/
-📦 Requirements
+
+---
+
+## 📦 Requirements
 
 Install dependencies:
 
+```bash
 pip install -r requirements.txt
-Run the training script:
+```
+
+
+## Run the training script:
 
 python train.py
 
@@ -75,7 +82,7 @@ Save the best model weights in checkpoints/
 
 
 
-Metrics:
+## Metrics:
 
 IoU
 
@@ -84,7 +91,7 @@ Precision
 Recall
 
 F1-Score
-🖼️ Demo (Visualization)
+##  Demo (Visualization)
 
 Open:
 
@@ -108,7 +115,7 @@ Loss = BCE + α·(1 – IoU)
 
 Metrics: IoU, Precision, Recall, F1-score
 
-✔️ Dataset Pipeline
+## ✔️ Dataset Pipeline
 
 Auto-pairing images & masks
 
@@ -122,7 +129,7 @@ Random rotation
 
 tf.data with caching, batching, prefetching
 
-✔️ Experiments Included
+## ✔️ Experiments Included
 
 Two improvement experiments were run:
 
@@ -131,17 +138,18 @@ Experiment 1 — Add Dropout + BatchNorm
 Improves generalization
 
 Stabilizes training
-The best weights are saved automatically:
+
+## The best weights are saved automatically:
 
 checkpoints/best_weights.weights.h5
 
 
-Improved model weights:
+## Improved model weights:
 
 checkpoints_exps/best_weights_exp1.h5
 checkpoints_exps/best_weights_exp2.h5
 
-🧪 Evaluation
+## 🧪 Evaluation
 
 Run on test set:
 
